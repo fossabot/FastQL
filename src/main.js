@@ -12,8 +12,9 @@ export default class FastQl {
     query(sql, args) {
         return new Promise((resolve, reject) => {
             this.db.query(sql, args, (err, rows) => {
+                //console.log(err)
                 if (err)
-                    return reject({ err: err, data: null });
+                    return resolve({ err: err, data: null });
                 this.end()
                 resolve({ err: null, data: rows });
             });
@@ -54,14 +55,21 @@ export default class FastQl {
     async find(name) {
         var { err, data } = await this
             .query(`select * from ${this.table_name} where ${this.primary_name}=${name}`);
-
+            //console.log('err log : ', err?err:'no error')
         return new Promise((resolve, reject) => {
+            if(err){
+                reject(err)
+            }
             if (data.length > 0) {
                 resolve(data[0])
             } else {
                 resolve(false)
             }
         })
+
+    }
+
+    async where(column,operator,value){
 
     }
 
