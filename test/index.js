@@ -25,15 +25,12 @@ var User = db.models('User').db;
 
 async function index() {
     
-    var u = User.find(1).then(res=>{
+    var u = User.search(['first_name','email'], 'Bridgette').then(res=>{
         console.log(res)
     }).catch(err =>{
         console.log('err :', err.sqlMessage)
     })
-    
-    //User.save(u)
-    
-    
+        
 } 
 
 

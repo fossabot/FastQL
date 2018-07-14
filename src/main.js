@@ -7,14 +7,16 @@ export default class FastQl {
         this.db = mysql.createConnection(config)
         this.table_name = "";
         this.primary_name = "";
+        this.sql = "";
+        this.selectColumn = "";
     }
 
     query(sql, args) {
         return new Promise((resolve, reject) => {
             this.db.query(sql, args, (err, rows) => {
-                //console.log(err)
                 if (err)
                     return resolve({ err: err, data: null });
+                this.reset()
                 this.end()
                 resolve({ err: null, data: rows });
             });
@@ -35,8 +37,14 @@ export default class FastQl {
         return this.query('show databases')
     }
 
-    table(name) {       
-        this.table_name = name;  
+    reset() {
+        this.sql = "";
+        this.where_status = false;
+        this.selectColumn = "";
+    }
+
+    table(name) {
+        this.table_name = name;
     }
 
     primary(name) {
@@ -44,20 +52,42 @@ export default class FastQl {
     }
 
     models(model) {
+        this.reset()
         var app = require('auto-loader').load(this.modelPath)
         return app[model](this)
     }
 
-    save(data){
-        console.log(data)
+    select(column) {
+        if (column) {
+            this.selectColumn = column;
+        }
+        this.sql = `select ${this.selectColumn ? this.selectColumn : '*'} from ${this.table_name}`
+        return this;
     }
 
-    async find(name) {
+
+    async find(value) {
+        return this.select()
+            .where(this.primary_name, '=', value)
+            .first();
+    }
+
+    async get() {
         var { err, data } = await this
-            .query(`select * from ${this.table_name} where ${this.primary_name}=${name}`);
-            //console.log('err log : ', err?err:'no error')
+            .query(this.sql);
         return new Promise((resolve, reject) => {
-            if(err){
+            if (err) {
+                reject(err)
+            }
+            resolve(data)
+        })
+    }
+
+    async first() {
+        var { err, data } = await this
+            .query(this.sql);
+        return new Promise((resolve, reject) => {
+            if (err) {
                 reject(err)
             }
             if (data.length > 0) {
@@ -66,11 +96,46 @@ export default class FastQl {
                 resolve(false)
             }
         })
-
     }
 
-    async where(column,operator,value){
+    where(column, operator, value) {
+        if (!this.where_status) {
+            this.where_status = true;
+            this.sql += ` where ${column} ${operator} '${value}'`;
+        } else {
+            this.sql += ` and ${column} ${operator} '${value}'`;
+        }
+        return this;
+    }
 
+    or(column, operator, value) {
+        this.sql += ` or ${column} ${operator} '${value}'`;
+        return this;
+    }
+
+    loopAsyncForOr(array, value) {
+        return new Promise((resolve, reject) => {
+            var count = array.length - 1
+            var i = 0;
+            for (let item of array) {
+                if (i !== 0) {                    
+                    this.or(item, 'like', `%${value}%`)
+                }
+
+                if (i + 1 == count) {
+                    resolve(true)
+                }
+
+                i++;
+            }
+
+        })
+    }
+
+    async search(columns, value) {
+        var q = this.select().where(columns[0], 'like', `%${value}%`)
+        await this.loopAsyncForOr(columns, value);
+        return q.get()
     }
 
 
