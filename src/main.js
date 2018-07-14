@@ -133,9 +133,9 @@ export default class FastQl {
     }
 
     async search(columns, value) {
-        var q = this.select().where(columns[0], 'like', `%${value}%`)
+        var sql = this.select().where(columns[0], 'like', `%${value}%`)
         await this.loopAsyncForOr(columns, value);
-        return q.get()
+        return sql.get()
     }
 
 
