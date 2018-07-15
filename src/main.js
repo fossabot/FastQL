@@ -113,7 +113,7 @@ export default class FastQl {
         return this;
     }
 
-    loopAsyncForOr(array, value) {
+    loopAsyncForSearch(array, value) {
         return new Promise((resolve, reject) => {
             var count = array.length - 1
             var i = 0;
@@ -134,7 +134,7 @@ export default class FastQl {
 
     async search(columns, value) {
         var sql = this.select().where(columns[0], 'like', `%${value}%`)
-        await this.loopAsyncForOr(columns, value);
+        await this.loopAsyncForSearch(columns, value);
         return sql.get()
     }
 
