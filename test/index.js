@@ -3,10 +3,10 @@
 import FastQl from './../'
 
 var db = new FastQl({
-    host     : '192.168.1.102',
+    host     : 'localhost',
     user     : 'root',
-    password : '',
-    database : '',
+    password : 'roottoor',
+    database : 'testdb2',
     modelPath: `${__dirname}/models`
 })
 
@@ -20,12 +20,12 @@ var to = (promise)=>{
     })
 }
 
-var Order = db.models('Order').db;
+var Author = db.models('Author').db;
 
 async function index() {
 
-    Order.select('id, name').search(['user_id'], 26).orderBy('id','desc').forPage(0,2).then(res =>{
-       console.log(res)
+    Author.select('id, first_name, last_name').search(['first_name'],'G').forPage(2,2).then(res =>{
+        console.log(res)
     })
 
 } 

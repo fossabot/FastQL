@@ -1,5 +1,5 @@
 module.exports = (db) => {
-    db.table('orders')
+    db.table('authors')
     db.primary('id')    
     return {
         db
