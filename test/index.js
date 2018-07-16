@@ -25,11 +25,10 @@ var Order = db.models('Order').db;
 
 async function index() {
     
-    Order.search(['user_id'], '26').then(res=>{
+    Order.search(['user_id','id', 'weight','freeshipping_manual'], '31').get().then(res =>{
         console.log(res)
-    }).catch(err =>{
-        console.log('err :', err.sqlMessage)
     })
+    //console.log(o)
         
 } 
 

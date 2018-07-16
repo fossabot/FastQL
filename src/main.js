@@ -52,7 +52,6 @@ export default class FastQl {
     }
 
     models(model) {
-        this.reset()
         var app = require('auto-loader').load(this.modelPath)
         return app[model](this)
     }
@@ -73,6 +72,7 @@ export default class FastQl {
     }
 
     async get() {
+        console.log(this.sql)
         var { err, data } = await this
             .query(this.sql);
         return new Promise((resolve, reject) => {
@@ -113,32 +113,27 @@ export default class FastQl {
         return this;
     }
 
-    loopAsyncForSearch(array, value) {
-        return new Promise((resolve, reject) => {
-            var count = array.length - 1
-            if(array.length == 1){
-                resolve(true)
+
+    search(columns, value) {
+        this.select().where(columns[0], 'like', `%${value}%`)        
+        if(columns.length == 1){           
+            return this;
+        }
+        var count = columns.length;
+        var i = 0;
+        for (let item of columns) {
+            console.log(item)
+            if (i !== 0) {         
+                this.or(item, 'like', `%${value}%`)
             }
-            var i = 0;
-            for (let item of array) {
-                if (i !== 0) {                    
-                    this.or(item, 'like', `%${value}%`)
-                }
-                console.log(i + 1,  count)
-                if (i + 1 == count) {
-                    resolve(true)
-                }
-
-                i++;
+            console.log(i + 1,  count)
+            if (i + 1 == count) {
+                return this;
             }
 
-        })
-    }
-
-    async search(columns, value) {
-        var sql = this.select().where(columns[0], 'like', `%${value}%`)
-        await this.loopAsyncForSearch(columns, value);
-        return sql.get()
+            i++;
+        }
+        
     }
 
 
