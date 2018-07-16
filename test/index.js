@@ -11,7 +11,7 @@ var db = new FastQl({
 })
 
 var to = (promise)=>{
-    return new Promise((resolve, rejects)=>{
+    return new Promise((resolve)=>{
         promise.then(res =>{
             resolve({err: null, data: res })
         }).catch(err =>{
@@ -24,13 +24,10 @@ var Order = db.models('Order').db;
 
 async function index() {
 
-    console.log('run')
-
-    Order.search(['id'], 31).get().then(res =>{
-        console.log(res)
+    Order.select('id, name').search(['user_id'], 26).orderBy('id','desc').get().then(res =>{
+       console.log(res)
     })
-    
-        
+
 } 
 
 
