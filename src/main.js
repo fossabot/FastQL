@@ -125,6 +125,18 @@ export default class FastQl {
     });
   }
 
+
+  async forPage(currentPage, perPage) {
+    this.sql += ` limit ${parseFloat(perPage)}`;
+    var { err, data } = await this.query(this.sql);
+    return new Promise((resolve, reject) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(data);
+    });
+  }
+
   where(column, operator, value) {
     if (!this.where_status) {
       this.where_status = true;
@@ -168,4 +180,6 @@ export default class FastQl {
       i++;
     }
   }
+
+
 }

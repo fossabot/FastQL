@@ -24,7 +24,7 @@ var Order = db.models('Order').db;
 
 async function index() {
 
-    Order.select('id, name').search(['user_id'], 26).orderBy('id','desc').get().then(res =>{
+    Order.select('id, name').search(['user_id'], 26).orderBy('id','desc').forPage(0,2).then(res =>{
        console.log(res)
     })
 
