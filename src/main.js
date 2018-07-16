@@ -1,4 +1,5 @@
 import mysql from 'mysql';
+import SqlString from 'sqlstring';
 
 export default class FastQl {
 
@@ -11,9 +12,15 @@ export default class FastQl {
         this.selectColumn = "";
     }
 
+    input(value){
+        return SqlString.escape(value)
+    }
+
     query(sql, args) {
+        var es_sql = SqlString.format(sql);
+        console.log(es_sql)
         return new Promise((resolve, reject) => {
-            this.db.query(sql, args, (err, rows) => {
+            this.db.query(es_sql, args, (err, rows) => {
                 if (err)
                     return resolve({ err: err, data: null });
                 this.reset()
@@ -71,8 +78,7 @@ export default class FastQl {
             .first();
     }
 
-    async get() {
-        console.log(this.sql)
+    async get() {       
         var { err, data } = await this
             .query(this.sql);
         return new Promise((resolve, reject) => {
@@ -101,15 +107,15 @@ export default class FastQl {
     where(column, operator, value) {
         if (!this.where_status) {
             this.where_status = true;
-            this.sql += ` where ${column} ${operator} '${value}'`;
+            this.sql += ` where ${column} ${operator} ${this.input(value)}`;
         } else {
-            this.sql += ` and ${column} ${operator} '${value}'`;
+            this.sql += ` and ${column} ${operator} ${this.input(value)}`;
         }
         return this;
     }
 
     or(column, operator, value) {
-        this.sql += ` or ${column} ${operator} '${value}'`;
+        this.sql += ` or ${column} ${operator} ${this.input(value)}`;
         return this;
     }
 
@@ -121,12 +127,10 @@ export default class FastQl {
         }
         var count = columns.length;
         var i = 0;
-        for (let item of columns) {
-            console.log(item)
+        for (let item of columns) {            
             if (i !== 0) {         
                 this.or(item, 'like', `%${value}%`)
-            }
-            console.log(i + 1,  count)
+            }           
             if (i + 1 == count) {
                 return this;
             }

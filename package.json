@@ -12,7 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "auto-loader": "^0.2.0",
-    "mysql": "^2.15.0"
+    "mysql": "^2.15.0",
+    "sqlstring": "^2.3.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

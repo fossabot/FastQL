@@ -1,7 +1,6 @@
 /// Test Script
 
 import FastQl from './../'
-import { resolve } from 'url';
 
 var db = new FastQl({
     host     : '192.168.1.102',
@@ -24,11 +23,13 @@ var to = (promise)=>{
 var Order = db.models('Order').db;
 
 async function index() {
-    
-    Order.search(['user_id','id', 'weight','freeshipping_manual'], '31').get().then(res =>{
+
+    console.log('run')
+
+    Order.search(['id'], 31).get().then(res =>{
         console.log(res)
     })
-    //console.log(o)
+    
         
 } 
 
