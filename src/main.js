@@ -116,12 +116,15 @@ export default class FastQl {
     loopAsyncForSearch(array, value) {
         return new Promise((resolve, reject) => {
             var count = array.length - 1
+            if(array.length == 1){
+                resolve(true)
+            }
             var i = 0;
             for (let item of array) {
                 if (i !== 0) {                    
                     this.or(item, 'like', `%${value}%`)
                 }
-
+                console.log(i + 1,  count)
                 if (i + 1 == count) {
                     resolve(true)
                 }

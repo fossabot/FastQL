@@ -4,10 +4,10 @@ import FastQl from './../'
 import { resolve } from 'url';
 
 var db = new FastQl({
-    host     : 'localhost',
+    host     : '192.168.1.102',
     user     : 'root',
-    password : 'roottoor',
-    database : 'testdb',
+    password : '',
+    database : '',
     modelPath: `${__dirname}/models`
 })
 
@@ -21,11 +21,11 @@ var to = (promise)=>{
     })
 }
 
-var User = db.models('User').db;
+var Order = db.models('Order').db;
 
 async function index() {
     
-    var u = User.search(['first_name','email'], 'Bridgette').then(res=>{
+    Order.search(['user_id'], '26').then(res=>{
         console.log(res)
     }).catch(err =>{
         console.log('err :', err.sqlMessage)
