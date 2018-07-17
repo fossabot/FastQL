@@ -20,11 +20,13 @@ var to = (promise)=>{
     })
 }
 
-var Author = db.models('Author').db;
-
+var Author = db.models('Author');
 async function index() {
-
-    Author.select('id, first_name, last_name').search(['first_name'],'G').forPage(2,2).then(res =>{
+    
+    Author.select('id, first_name, last_name')
+        .search(['first_name'],'G')
+        .get()
+        .then(res =>{
         console.log(res)
     })
 

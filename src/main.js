@@ -3,6 +3,7 @@ import SqlString from "sqlstring";
 
 export default class FastQl {
     constructor(config) {
+        this.config = config;
         this.modelPath = config.modelPath;
         this.db = mysql.createConnection(config);
         this.table_name = "";
@@ -40,8 +41,8 @@ export default class FastQl {
                 if (this.end_query) {
                     this.reset();
                     this.end();
-                }else{
-                   // process.stdout.write('\x1B[2J');
+                } else {
+                    // process.stdout.write('\x1B[2J');
                 }
 
                 resolve({ err: null, data: rows });
@@ -50,11 +51,8 @@ export default class FastQl {
     }
 
     end() {
-        return new Promise((resolve, reject) => {
-            this.db.end(err => {
-                if (err) return reject(err);
-                resolve();
-            });
+        this.db.end(err => {
+           // end.
         });
     }
 
@@ -99,8 +97,8 @@ export default class FastQl {
     }
 
     models(model) {
-        var app = require("auto-loader").load(this.modelPath);
-        return app[model](this);
+        var app = require("auto-loader").load(this.modelPath)[model];
+        return app(this);
     }
 
     select(column) {
@@ -212,6 +210,10 @@ export default class FastQl {
 
             i++;
         }
+    }
+
+    join(model){
+
     }
 
 
