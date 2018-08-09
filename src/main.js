@@ -1,3 +1,14 @@
+
+/*
+##################################
+ _____         _    ___  _     
+|  ___|_ _ ___| |_ / _ \| |    
+| |_ / _` / __| __| | | | |    
+|  _| (_| \__ \ |_| |_| | |___ 
+|_|  \__,_|___/\__|\__\_\_____|
+##################################                               
+*/
+
 import mysql from "mysql";
 import SqlString from "sqlstring";
 
@@ -105,9 +116,7 @@ export default class FastQl {
         if (column) {
             this.selectColumn = column;
         }
-        this.sql = `select ${this.selectColumn ? this.selectColumn : "*"} from ${
-            this.table_name
-            }`;
+        this.sql = `select ${this.selectColumn ? this.selectColumn : "*"} from ${this.table_name}`;
         return this;
     }
 
@@ -168,7 +177,28 @@ export default class FastQl {
         });
     }
 
+    check_operator(operator){
+        switch(operator){
+            case '=':
+                return true
+            case '<':
+                return true
+            case '>':
+                return true
+            case 'like':
+                return true
+            default:
+                return false
+        }
+        
+    }
+
     where(column, operator, value) {
+        // defalut operator '='
+        if(!this.check_operator(operator) && !value){
+            value = operator;
+            operator = '=';
+        }
         if (!this.where_status) {
             this.where_status = true;
             this.sql += ` where ${column} ${operator} ${this.input(value)}`;
@@ -211,10 +241,5 @@ export default class FastQl {
             i++;
         }
     }
-
-    join(model){
-
-    }
-
 
 }
