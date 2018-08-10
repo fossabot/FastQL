@@ -63,7 +63,7 @@ export default class FastQl {
 
     end() {
         this.db.end(err => {
-           // end.
+            // end.
         });
     }
 
@@ -108,7 +108,8 @@ export default class FastQl {
     }
 
     models(model) {
-        var app = require("auto-loader").load(this.modelPath)[model];
+        var app = require("auto-loader").load(this.modelPath)[model]["default"];
+        //console.log(app)
         return app(this);
     }
 
@@ -127,6 +128,9 @@ export default class FastQl {
     }
 
     async get() {
+        if (!this.sql) {
+            this.select();
+        }
         var { err, data } = await this.query(this.sql);
         return new Promise((resolve, reject) => {
             if (err) {
@@ -177,8 +181,8 @@ export default class FastQl {
         });
     }
 
-    check_operator(operator){
-        switch(operator){
+    check_operator(operator) {
+        switch (operator) {
             case '=':
                 return true
             case '<':
@@ -190,12 +194,12 @@ export default class FastQl {
             default:
                 return false
         }
-        
+
     }
 
     where(column, operator, value) {
         // defalut operator '='
-        if(!this.check_operator(operator) && !value){
+        if (!this.check_operator(operator) && !value) {
             value = operator;
             operator = '=';
         }
@@ -241,5 +245,11 @@ export default class FastQl {
             i++;
         }
     }
+
+    // hashOne(name_fun, model, column1, column2){
+    //     this[name_fun] = ()=>{
+
+    //     }
+    // }
 
 }
