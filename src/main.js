@@ -33,7 +33,7 @@ export default class FastQl {
     }
 
     query(sql, args) {
-        
+
         var es_sql = SqlString.format(sql);
 
         console.log("\x1b[31m", "#############################");
@@ -49,7 +49,7 @@ export default class FastQl {
         return new Promise((resolve, reject) => {
             this.db.query(es_sql, args, (err, rows) => {
                 
-                if (err) return resolve({ err: err, data: null });
+                if (err) return resolve({ err: JSON.stringify(err), data: null });
 
                 if (this.end_query) {
                     this.reset();
@@ -119,7 +119,7 @@ export default class FastQl {
     select(column) {
         if (column) {
             this.selectColumn = column;
-        }else{
+        } else {
             this.selectColumn = '*';
         }
         this.sql = `select ${this.selectColumn ? this.selectColumn : "*"} from ${this.table_name}`;
@@ -134,7 +134,7 @@ export default class FastQl {
             .first();
     }
 
-    async get() {        
+    async get() {
         if (!this.sql) {
             this.select();
         }
@@ -187,6 +187,7 @@ export default class FastQl {
             totalData: totalData,
             data: data ? data : []
         }
+        
         return new Promise((resolve, reject) => {
             if (err) {
                 reject(err);
@@ -268,6 +269,18 @@ export default class FastQl {
 
             i++;
         }
+    }
+    
+     async insert(obj) {       
+        this.sql = `insert into ${this.table_name} SET ?`;
+        var {err, data} = await this.query(this.sql, obj);
+        return new Promise((resolve, reject) => {
+            if (err) {
+                reject(err);
+            }
+            data['data'] = obj;
+            resolve(data);
+        });
     }
 
     // hashOne(name_fun, model, column1, column2){
