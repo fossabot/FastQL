@@ -16,15 +16,15 @@ export default class FastQl {
     constructor(config) {
         this.config = config;
         this.modelPath = config.modelPath;
-        this.db = mysql.createConnection(this.config);
         this.table_name = "";
         this.primary_name = "";
         this.sql = "";
         this.selectColumn = "";
         this.end_query = true;
         this.where_status = false;
-        process.stdout.write('\x1B[2J');
-        
+        //process.stdout.write('\x1B[2J');
+        this.db = mysql.createConnection(this.config);
+
 
     }
 
@@ -32,8 +32,10 @@ export default class FastQl {
         return SqlString.escape(value);
     }
 
-    query(sql, args) {       
+    query(sql, args) {
+        
         var es_sql = SqlString.format(sql);
+
         console.log("\x1b[31m", "#############################");
         console.log("\x1b[31m", "#############################");
         console.log(" ## SQL QUERY ##");
@@ -45,7 +47,8 @@ export default class FastQl {
         console.log("\x1b[0m");
 
         return new Promise((resolve, reject) => {
-            this.db.query(es_sql, args, (err, rows) => {
+            this.db.query(es_sql, [args], (err, rows) => {
+                console.log(err, rows)
                 if (err) return resolve({ err: err, data: null });
 
                 if (this.end_query) {
@@ -62,6 +65,7 @@ export default class FastQl {
 
     end() {
         this.db.end(err => {
+            //console.log(err)
             // end.
         });
     }
@@ -115,18 +119,22 @@ export default class FastQl {
     select(column) {
         if (column) {
             this.selectColumn = column;
+        }else{
+            this.selectColumn = '*';
         }
         this.sql = `select ${this.selectColumn ? this.selectColumn : "*"} from ${this.table_name}`;
         return this;
     }
 
     find(value) {
-        return this.select()
-            .where(this.primary_name, "=", value)
+        if (!this.sql) {
+            this.select();
+        }
+        return this.where(this.primary_name, "=", value)
             .first();
     }
 
-    async get() {
+    async get() {        
         if (!this.sql) {
             this.select();
         }
@@ -140,6 +148,10 @@ export default class FastQl {
     }
 
     async first() {
+        if (!this.sql) {
+            this.select();
+        }
+        console.log(this.sql, this.selectColumn)
         var { err, data } = await this.query(this.sql);
         return new Promise((resolve, reject) => {
             if (err) {
@@ -155,6 +167,9 @@ export default class FastQl {
 
 
     async forPage(currentPage, perPage) {
+        if (!this.sql) {
+            this.select();
+        }
         var n = this.sql.search(`from ${this.table_name}`);
         var sql_count = this.sql;
         this.end_query = false;
@@ -198,6 +213,9 @@ export default class FastQl {
 
     where(column, operator, value) {
         // defalut operator '='
+        if (!this.sql) {
+            this.select();
+        }
         if (!this.check_operator(operator) && !value) {
             value = operator;
             operator = '=';
@@ -212,6 +230,10 @@ export default class FastQl {
     }
 
     or(column, operator, value) {
+        if (!this.check_operator(operator) && !value) {
+            value = operator;
+            operator = '=';
+        }
         this.sql += ` or ${column} ${operator} ${this.input(value)}`;
         return this;
     }
@@ -227,7 +249,10 @@ export default class FastQl {
     }
 
     search(columns, value) {
-        this.select().where(columns[0], "like", `%${value}%`);
+        if (!this.sql) {
+            this.select();
+        }
+        this.where(columns[0], "like", `%${value}%`);
         if (columns.length == 1) {
             return this;
         }
