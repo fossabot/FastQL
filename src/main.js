@@ -47,8 +47,8 @@ export default class FastQl {
         console.log("\x1b[0m");
 
         return new Promise((resolve, reject) => {
-            this.db.query(es_sql, [args], (err, rows) => {
-               // console.log(err, rows)
+            this.db.query(es_sql, args, (err, rows) => {
+                
                 if (err) return resolve({ err: err, data: null });
 
                 if (this.end_query) {
