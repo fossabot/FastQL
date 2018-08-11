@@ -16,7 +16,6 @@ export default class FastQl {
     constructor(config) {
         this.config = config;
         this.modelPath = config.modelPath;
-        this.db = mysql.createConnection(config);
         this.table_name = "";
         this.primary_name = "";
         this.sql = "";
@@ -32,9 +31,8 @@ export default class FastQl {
     }
 
     query(sql, args) {
-
+        this.db = mysql.createConnection(this.config);
         var es_sql = SqlString.format(sql);
-
         console.log("\x1b[31m", "#############################");
         console.log("\x1b[31m", "#############################");
         console.log(" ## SQL QUERY ##");
