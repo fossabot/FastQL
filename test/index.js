@@ -23,7 +23,7 @@ var to = (promise)=>{
 var Users = db.models('Users');
 async function index() {
     
-    Users.search(['first_name'],'Che').get()
+    Users.search(['email'],'gov').forPage(1,5)
         .then(res =>{
         console.log(res)
     })
