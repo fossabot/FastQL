@@ -16,6 +16,7 @@ export default class FastQl {
     constructor(config) {
         this.config = config;
         this.modelPath = config.modelPath;
+        this.db = mysql.createConnection(this.config);
         this.table_name = "";
         this.primary_name = "";
         this.sql = "";
@@ -23,6 +24,7 @@ export default class FastQl {
         this.end_query = true;
         this.where_status = false;
         process.stdout.write('\x1B[2J');
+        
 
     }
 
@@ -30,8 +32,7 @@ export default class FastQl {
         return SqlString.escape(value);
     }
 
-    query(sql, args) {
-        this.db = mysql.createConnection(this.config);
+    query(sql, args) {       
         var es_sql = SqlString.format(sql);
         console.log("\x1b[31m", "#############################");
         console.log("\x1b[31m", "#############################");
@@ -49,7 +50,7 @@ export default class FastQl {
 
                 if (this.end_query) {
                     this.reset();
-                    this.end();
+                    //this.end();
                 } else {
                     // process.stdout.write('\x1B[2J');
                 }
