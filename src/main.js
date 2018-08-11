@@ -21,7 +21,7 @@ export default class FastQl {
         this.sql = "";
         this.selectColumn = "";
         this.end_query = true;
-
+        this.where_status = false;
         process.stdout.write('\x1B[2J');
 
     }
