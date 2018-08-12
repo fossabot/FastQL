@@ -283,13 +283,9 @@ export default class FastQl {
         });
     }
 
-    async update(obj, column, operator, value_check) { 
-        if (!this.check_operator(operator) && !value_check) {
-            value_check = operator;
-            operator = '=';
-        }      
-        this.sql = `update ${this.table_name} SET ? where ${column} ${operator} ${this.input(value_check)}`;
-        var {err, data} = await this.query(this.sql, obj);
+    async update(obj, obj_check) {     
+        this.sql = `update ${this.table_name} SET ? where ?`;
+        var {err, data} = await this.query(this.sql, [obj, obj_check]);
         return new Promise((resolve, reject) => {
             if (err) {
                 reject(err);
