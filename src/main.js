@@ -173,7 +173,7 @@ export default class FastQl {
         var n = this.sql.search(`from ${this.table_name}`);
         var sql_count = this.sql;
         this.end_query = false;
-        var { err, data } = await this.query(`select count(${this.primary_name}) as total ${sql_count.substr(n)}`);
+        var { err, data } = await this.query(`select count(${this.table_name}.${this.primary_name}) as total ${sql_count.substr(n)}`);
         this.end_query = true;
         var totalData = data[0].total;
         var total_pages = Math.ceil(totalData / perPage);
