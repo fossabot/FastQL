@@ -49,7 +49,7 @@ export default class FastQl {
         return new Promise((resolve, reject) => {
             this.db.query(es_sql, args, (err, rows) => {
                
-                if (err) return resolve({ err: JSON.stringify(err), data: null });
+                if (err) return resolve({ err: err, data: null });
 
                 if (this.end_query) {
                     this.reset();
