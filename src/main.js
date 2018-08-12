@@ -40,7 +40,7 @@ export default class FastQl {
         console.log("\x1b[31m", "#############################");
         console.log(" ## SQL QUERY ##");
         console.log(" ");
-        console.log('',es_sql,'\n',args);
+        console.log('',es_sql,'\n',args?args:'');
         console.log(" ");
         console.log(" #############################");
         console.log(" #############################");
