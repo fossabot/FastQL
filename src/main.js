@@ -308,11 +308,12 @@ export default class FastQl {
         });
     }
 
-
-    // hashOne(name_fun, model, column1, column2){
-    //     this[name_fun] = ()=>{
-
-    //     }
-    // }
+    join(table, primary, foreign){
+        if (!this.sql) {
+            this.select();
+        }
+        this.sql += ` inner join ${table} on ${this.table_name}.${primary} = ${table}.${foreign}`;
+        return this
+    }
 
 }
