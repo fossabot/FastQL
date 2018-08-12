@@ -40,7 +40,7 @@ export default class FastQl {
         console.log("\x1b[31m", "#############################");
         console.log(" ## SQL QUERY ##");
         console.log(" ");
-        console.log(es_sql);
+        console.log('',es_sql,'\n',args);
         console.log(" ");
         console.log(" #############################");
         console.log(" #############################");
@@ -48,7 +48,7 @@ export default class FastQl {
 
         return new Promise((resolve, reject) => {
             this.db.query(es_sql, args, (err, rows) => {
-                
+               
                 if (err) return resolve({ err: JSON.stringify(err), data: null });
 
                 if (this.end_query) {
@@ -272,7 +272,7 @@ export default class FastQl {
     }
     
      async insert(obj) {       
-        this.sql = `insert into ${this.table_name} SET ?`;
+        this.sql = `insert into ${this.table_name} set ?`;
         var {err, data} = await this.query(this.sql, obj);
         return new Promise((resolve, reject) => {
             if (err) {
@@ -284,7 +284,7 @@ export default class FastQl {
     }
 
     async update(obj, obj_check) {     
-        this.sql = `update ${this.table_name} SET ? where ?`;
+        this.sql = `update ${this.table_name} set ? where ?`;
         var {err, data} = await this.query(this.sql, [obj, obj_check]);
         return new Promise((resolve, reject) => {
             if (err) {
