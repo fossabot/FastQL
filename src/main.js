@@ -117,12 +117,8 @@ export default class FastQl {
     }
 
     select(column) {
-        if (column) {
-            this.selectColumn = column;
-        } else {
-            this.selectColumn = '*';
-        }
-        this.sql = `select ${this.selectColumn ? this.selectColumn : "*"} from ${this.table_name}`;
+        this.selectColumn = column?column:'*';
+        this.sql = `select ${this.selectColumn} from ${this.table_name}`;
         return this;
     }
 
