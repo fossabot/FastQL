@@ -5,7 +5,7 @@ import FastQl from './../'
 var db = new FastQl({
     host     : '127.0.0.1',
     user     : 'root',
-    password : 'DiwBN6969',
+    password : 'toor',
     database : 'testdb',
     modelPath: `${__dirname}/models`
 })
